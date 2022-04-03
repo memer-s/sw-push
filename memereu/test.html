@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <br>
+  <input type="text" id="title">
+  <br>
+  <input type="text" id="content">
+  <button id="send">Send</button>
+
+  <script>
+    document.getElementById('send').addEventListener('click', () => {
+      const body = {
+        title: document.getElementById('title').value,
+        content: document.getElementById('content').value
+      }
+      console.log(body);
+      fetch(
+        './sendNotifications',
+        {
+          method: 'post',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        }
+      )
+    })
+  </script>
+</body>
+
+</html>

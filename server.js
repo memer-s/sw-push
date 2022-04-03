@@ -22,26 +22,44 @@ app.get('/main.js', (req, res) => {
 	res.sendFile(`C:/Users/mimer/Desktop/webdev/Service Workers/main.js`)
 })
 
+app.get('/test', (req, res) => {
+	res.sendFile(`C:/Users/mimer/Desktop/webdev/Service Workers/test.html`)
+})
 
+let clients = []
 
 app.get('/vapidPublicKey', (req,res) => {
 	res.send(process.env.PUBLIC_KEY)
 })
 
 app.post('/register', (req, res) => {
-	console.log(req.body);
+	console.log(req.body.subscription);
+	clients.push(req.body.subscription);
 	res.sendStatus(201);
 })
 
 app.post('/sendNotification', (req, res) => {
 	const subscription = req.body.subscription;
-	const payload = null;
+	console.log(subscription);
+	const payload = JSON.stringify({title: 'Memer.eu', content: 'CRINGE ASS'});
 	const options = {
 		TTL: req.body.ttl
 	};
 	setTimeout(() => {
 		webPush.sendNotification(subscription, payload, options).then(res.sendStatus(201)).catch(err => console.error(err))
-	}, 1000)
+	}, 500)
+})
+
+app.post('/sendNotifications', (req, res) => {
+	console.log(req.body);
+	const payload = JSON.stringify({title: req.body.title, content: req.body.content})
+	const options = {
+		TTL: req.body.ttl
+	};
+	console.log(payload);
+	clients.forEach(el => {	
+		webPush.sendNotification(el, payload, options).then(res.sendStatus(201)).catch(err => console.error(err))
+	})
 })
 
 app.listen(3000, () => {
